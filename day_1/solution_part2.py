@@ -5,7 +5,6 @@ def solve():
     dial_size = 100
     position = 50
     times_at_zero = 0
-    times_passed_zero = 0
     
     for instruction in instructions:
         direction = instruction[0]
@@ -14,20 +13,24 @@ def solve():
         if direction == 'L':
             new_position = (position - amount) % dial_size
             
-            if amount > position:
-                times_passed_zero += (amount - position - 1) // dial_size + 1
+            if position > 0 and amount >= position:
+                times_at_zero += (amount - position) // dial_size + 1
+            elif position == 0 and amount >= dial_size:
+                times_at_zero += amount // dial_size
         else:
             new_position = (position + amount) % dial_size
             
-            if position + amount >= dial_size:
-                times_passed_zero += (position + amount) // dial_size
+            if position > 0:
+                first_zero = dial_size - position
+                if amount >= first_zero:
+                    times_at_zero += (amount - first_zero) // dial_size + 1
+            else:
+                if amount >= dial_size:
+                    times_at_zero += amount // dial_size
         
         position = new_position
-        
-        if position == 0:
-            times_at_zero += 1
     
-    print(f"Password (times dial left pointing at 0): {times_at_zero}")
+    print(f"Password (times dial points at 0): {times_at_zero}")
     
     return times_at_zero
 
